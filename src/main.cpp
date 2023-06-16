@@ -38,14 +38,12 @@ int main() {
     }
 
     Rubik rubik;
-    rubik.rotate(R_U);
     printf("RR: %zu\n", sizeof(RubikRenderer));
     RubikRenderer renderer{&rubik};
     SDL_Event event {};
     bool quit = false;
     while (!quit) {
         static bool onShift = false;
-        static bool onSolve = false;
         uint32_t start_tick = SDL_GetTicks(); // start tick for fps handle
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -61,9 +59,10 @@ int main() {
                 case SDLK_l: rubik.rotate(onShift ? R_ReL : R_L); break;
                 case SDLK_f: rubik.rotate(onShift ? R_ReF : R_F); break;
                 case SDLK_b: rubik.rotate(onShift ? R_ReB : R_B); break;
+                case SDLK_s: rubik.solve(); break;
 
                 case SDLK_LSHIFT: onShift = true; break;
-                case SDLK_RETURN: onSolve = true; break;
+                case SDLK_SPACE: printf("Error: %zu\n", rubik.heuristic()); break;
                 } break;
             } break;
             case SDL_KEYUP: {
@@ -82,11 +81,6 @@ int main() {
         }
         renderer.render(start_tick / 1000.0f);
         
-        if (onSolve) {
-            RUBIK_ROTATE_OP op = (RUBIK_ROTATE_OP)(rand() % ROTATE_OP_COUNT);
-            rubik.rotate(op);
-            if (rubik.finish()) onSolve = false;
-        }
         SDL_GL_SwapWindow(window);
         uint32_t interval = SDL_GetTicks() - start_tick;
         if (interval < 1000 / FPS) {

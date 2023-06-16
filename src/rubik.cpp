@@ -1,7 +1,10 @@
 #include "rubik.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#define INIT_SHUFFLE_COUNT 2
+#define ONE_FACE_CUBES 6
+#define TWO_FACE_CUBES 12
+#define TRI_FACE_CUBES 8
 size_t Cube::get_index() {
     size_t idx = 0;
     for (Face f = 0; f < faces.size(); f++) {
@@ -11,6 +14,7 @@ size_t Cube::get_index() {
     }
     return idx;
 }
+
 void Cube::dump() {
     for (Face f = 0; f < faces.size(); f++) {
         if (faces[f]) {
@@ -21,17 +25,8 @@ void Cube::dump() {
     printf("\n");
 }
 
-bool Rubik::finish() {
-    for (Face f = 0; f < FACE_COUNT; f++) {
-        size_t face_idx = WHOLE_FACE(f);
-        COLOR c = (*cache_cubes[face_idx].begin())->colors[f]; // one face cube
-        assert((*cache_cubes[face_idx].begin())->nFaces == 1);
-        for (auto& cube : cache_cubes[WHOLE_FACE(f)]) {
-            if (cube->colors[f] != c) return false;
-        }
-    }
-    return true;
-}
+// void Rubik::solve() {
+// }
 
 // ----- all_cubes construct -------
 Rubik::Rubik() {
@@ -39,7 +34,7 @@ Rubik::Rubik() {
         cube = std::make_shared<Cube>();
     }
     // init center cubes
-    for (Face f = 0; f < FACE_COUNT; f++) {
+    for (Face f = 0; f < ONE_FACE_CUBES; f++) {
         all_cubes[f]->set(f);
     }
     
@@ -47,17 +42,16 @@ Rubik::Rubik() {
     // U U U U D D D D
     // F F B B F F B B
     // L R L R L R L R
-    size_t tri_cube_count = 8;
-    for (size_t i = 0; i < tri_cube_count; i++) {
+    for (size_t i = 0; i < TRI_FACE_CUBES; i++) {
         all_cubes[i + FACE_COUNT]->set(i < 4 ? UP : DOWN);
         all_cubes[i + FACE_COUNT]->set((i / 2) % 2 == 0 ? FRONT : BACK);
         all_cubes[i + FACE_COUNT]->set((i % 2) == 0 ? LEFT : RIGHT);
     }
     // init bi_face_cubes D D D D U U U U R R L L
     // R L F B R L F B F B F B
-    size_t count = FACE_COUNT + tri_cube_count;
+    size_t count = ONE_FACE_CUBES + TRI_FACE_CUBES;
     for (Face f1 = 0; f1 < FACE_COUNT - 1; f1++) {
-        FACE oppose = get_oppose((FACE)f1);
+        FACE oppose = opposite_faces[(FACE)f1];
         for (Face f2 = f1 + 1; f2 < FACE_COUNT; f2++) {
             if (f2 != oppose) {
                 all_cubes[count]->set(f1);
@@ -66,6 +60,8 @@ Rubik::Rubik() {
             }
         }
     }
+    // all these cube will not change position 
+
     for (size_t i = 0; i < all_cubes.size(); i++) {
         all_cubes[i]->dump(); 
     }
@@ -91,8 +87,8 @@ Rubik::Rubik() {
     for (Face f = 0; f < FACE_COUNT; f++) {
         assert(cache_cubes[WHOLE_FACE(f)].size() == 9);
     }
-    for (size_t i = 0; i < 100; i++) {
-        RUBIK_ROTATE_OP op = (RUBIK_ROTATE_OP)(rand() % ROTATE_OP_COUNT);
+    for (size_t i = 0; i < INIT_SHUFFLE_COUNT; i++) {
+        RUBIK_ROTATE_OP op = (RUBIK_ROTATE_OP)(rand() % RUBIK_OP_COUNT);
         this->rotate(op);
     }
 }

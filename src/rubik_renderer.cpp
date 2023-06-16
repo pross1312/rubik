@@ -123,11 +123,7 @@ void RubikRenderer::gen_init_cubes() {
 }
 
 RubikRenderer::RubikRenderer(const Rubik* r): data{r} {
-    // this process is similar to one i do in rubik.cpp and the initial indexes are the same too
-    // but the indexes here won't change (for example index 0 will always store position of 1 face down cube)
-    // and the index 0 of all_cubes array could change to 1 face up cube
-    // that's why caching is needed, i hope my stupid comments help a little
-    cache_index.fill(-1); // so that we know which index has no data
+    cache_index.fill(-1);
     for (size_t i = 0; i < CUBE_COUNT; i++) {
         size_t idx = data->all_cubes[i]->get_index();
         cube_indexes[i] = idx;

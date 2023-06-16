@@ -24,6 +24,16 @@ enum FACE {
     BACK,
     FACE_COUNT,
 };
+inline static const FACE opposite_faces[FACE_COUNT] {
+    [DOWN] = UP,
+    [UP] = DOWN,
+    [RIGHT] = LEFT,
+    [LEFT] = RIGHT,
+    [FRONT] = BACK,
+    [BACK] = FRONT
+};
+
+
 
 
 
@@ -46,19 +56,6 @@ enum COLOR {
     NONE,
 };
 static_assert(NONE == 6 && "Should only have 6 colors and 1 none additional");
-
-inline static FACE get_oppose(FACE f) {
-    switch (f) {
-    case DOWN: return UP;
-    case UP: return DOWN;
-    case RIGHT: return LEFT;
-    case LEFT: return RIGHT;
-    case FRONT: return BACK;
-    case BACK: return FRONT;
-    default: assert(false && "unreachable, undefined face direction");
-    }
-    return FRONT; // unreachable
-}
 
 inline static void print_face(FACE f) {
     switch (f) {
@@ -87,9 +84,20 @@ enum CUBE_ROTATE_DIRECTION {
 };
 
 enum RUBIK_ROTATE_OP {
-    R_U = 0, R_D, R_R, R_L, R_F, R_B,
-    R_ReU, R_ReD, R_ReR, R_ReL, R_ReF, R_ReB,
-    ROTATE_OP_COUNT,
+    R_U = 0 , R_D   , R_R   , R_L   , R_F   , R_B,
+    R_ReU   , R_ReD , R_ReR , R_ReL , R_ReF , R_ReB,
+    R_2U    , R_2D  , R_2R  , R_2L  , R_2F  , R_2B,
+    RUBIK_OP_COUNT,
+};
+inline static const char* const rubik_op_name[RUBIK_OP_COUNT] {
+    "R_D"   , "R_U"   , "R_L"   , "R_R"   , "R_B"   , "R_F",
+    "R_ReD" , "R_ReU" , "R_ReL" , "R_ReR" , "R_ReB" , "R_ReF",
+    "R_2D"  , "R_2U"  , "R_2L"  , "R_2R"  , "R_2B"  , "R_2F",
+};
+inline static const RUBIK_ROTATE_OP reverse_rubik_op[RUBIK_OP_COUNT] {
+    R_ReU   , R_ReD , R_ReR , R_ReL , R_ReF , R_ReB,
+    R_U     , R_D   , R_R   , R_L   , R_F   , R_B,
+    R_2U    , R_2D  , R_2R  , R_2L  , R_2F  , R_2B,
 };
 
 
@@ -113,9 +121,14 @@ public:
     ~Rubik() = default;
     friend class RubikRenderer;     
     void rotate(RUBIK_ROTATE_OP dir);
-    void circular_swap_color(size_t start_cube_idx, CUBE_ROTATE_DIRECTION rot_dir);
+    size_t heuristic();
     bool finish();
+    void solve();
 private:
+    bool solve(size_t threshold, size_t depth, RUBIK_ROTATE_OP prev, std::list<RUBIK_ROTATE_OP>* ops, size_t* new_threshold);
+    void circular_swap_color(size_t start_cube_idx, CUBE_ROTATE_DIRECTION rot_dir);
+    size_t moves_need(Cube& c);
+
     std::array<ptr<Cube>, CUBE_COUNT> all_cubes; // do not count the center no faces or color cube;
 
     // to look up every cube in constant time, i will index them by 'or' of all faces that it contains together

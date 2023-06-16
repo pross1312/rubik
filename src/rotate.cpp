@@ -10,6 +10,8 @@
 //     Z_CLOCK_WISE,
 //     COUNT_CUBE_ROTATE_DIRECTION
 // };
+// Rotate don't change position of any cube in the all_cubes array
+// only color of their faces are changed
 inline static const FACE new_direction[COUNT_CUBE_ROTATE_DIRECTION][FACE_COUNT] {
 //  [INIT_DIRECTION]         {DOWN , UP   , RIGHT, LEFT , FRONT, BACK },
     [X_COUNTER_CLOCK_WISE] = {FRONT, BACK , RIGHT, LEFT , UP   , DOWN }, 
@@ -33,6 +35,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
         circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT), Y_CLOCK_WISE);
         circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_CLOCK_WISE);
         break;
+    case R_2U:
+        circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT), Y_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT), Y_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(UP) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_COUNTER_CLOCK_WISE);
+        break;
     case R_D:
         circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT), Y_CLOCK_WISE);
         circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_CLOCK_WISE);
@@ -40,6 +48,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
     case R_ReD:
         circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT), Y_COUNTER_CLOCK_WISE);
         circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_COUNTER_CLOCK_WISE);
+        break;
+    case R_2D:
+        circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT), Y_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT), Y_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(DOWN) | IDX_FACE(FRONT) | IDX_FACE(LEFT), Y_CLOCK_WISE);
         break;
     case R_R:
         circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT), X_COUNTER_CLOCK_WISE);
@@ -49,6 +63,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
         circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT), X_CLOCK_WISE);
         circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_CLOCK_WISE);
         break;
+    case R_2R:
+        circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT), X_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT), X_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(RIGHT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_COUNTER_CLOCK_WISE);
+        break;
     case R_L:
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), X_CLOCK_WISE);
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_CLOCK_WISE);
@@ -56,6 +76,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
     case R_ReL:
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), X_COUNTER_CLOCK_WISE);
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_COUNTER_CLOCK_WISE);
+        break;
+    case R_2L:
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), X_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), X_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), X_CLOCK_WISE);
         break;
     case R_F:
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), Z_CLOCK_WISE);
@@ -65,6 +91,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), Z_COUNTER_CLOCK_WISE);
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), Z_COUNTER_CLOCK_WISE);
         break;
+    case R_2F:
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), Z_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), Z_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT), Z_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(FRONT) | IDX_FACE(UP), Z_CLOCK_WISE);
+        break;
     case R_B:
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK), Z_COUNTER_CLOCK_WISE);
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK) | IDX_FACE(UP), Z_COUNTER_CLOCK_WISE);
@@ -72,6 +104,12 @@ void Rubik::rotate(RUBIK_ROTATE_OP op) {
     case R_ReB:
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK), Z_CLOCK_WISE);
         circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK) | IDX_FACE(UP), Z_CLOCK_WISE);
+        break;
+    case R_2B:
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK), Z_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK) | IDX_FACE(UP), Z_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK), Z_COUNTER_CLOCK_WISE);
+        circular_swap_color(IDX_FACE(LEFT) | IDX_FACE(BACK) | IDX_FACE(UP), Z_COUNTER_CLOCK_WISE);
         break;
     default:
         assert(false && "Undefined rotate operation");
