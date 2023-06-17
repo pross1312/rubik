@@ -62,7 +62,7 @@ int main() {
                 case SDLK_s: rubik.solve(); break;
 
                 case SDLK_LSHIFT: onShift = true; break;
-                case SDLK_SPACE: printf("Error: %zu\n", rubik.heuristic()); break;
+                case SDLK_SPACE: printf("Error: %8u\n", rubik.heuristic()); break;
                 } break;
             } break;
             case SDL_KEYUP: {

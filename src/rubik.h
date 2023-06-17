@@ -8,6 +8,7 @@
 template<typename T>
 using ptr = std::shared_ptr<T>;
 
+#define NO_OPERATION INT8_C(-1)
 #define CUBE_COUNT 26
 
 #define IDX_FACE(f) (1 << (f))
@@ -115,19 +116,27 @@ public:
     std::array<COLOR, FACE_COUNT> colors;
 };
 
+using OPERATION = int8_t;
+struct SolverStackData {
+    OPERATION prev; 
+    OPERATION cur;
+    uint8_t threshold;
+};
+
 class Rubik {
 public:
     Rubik();
     ~Rubik() = default;
     friend class RubikRenderer;     
     void rotate(RUBIK_ROTATE_OP dir);
-    size_t heuristic();
+    uint8_t heuristic();
     bool finish();
     void solve();
 private:
-    bool solve(size_t threshold, size_t depth, RUBIK_ROTATE_OP prev, std::list<RUBIK_ROTATE_OP>* ops, size_t* new_threshold);
+    bool solve(uint8_t threshold, uint8_t depth, RUBIK_ROTATE_OP prev, std::list<RUBIK_ROTATE_OP>* ops, uint8_t* new_threshold);
+    bool solve(SolverStackData root_data, uint8_t* new_threshold);
     void circular_swap_color(size_t start_cube_idx, CUBE_ROTATE_DIRECTION rot_dir);
-    size_t moves_need(Cube& c);
+    uint8_t moves_need(Cube& c);
 
     std::array<ptr<Cube>, CUBE_COUNT> all_cubes; // do not count the center no faces or color cube;
 
